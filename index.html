@@ -32,6 +32,7 @@
             transform: translate(-50%, -50%);
             cursor: move;
             user-select: none;
+            overflow: visible;
         }
 
         .calculator:active {
@@ -40,15 +41,14 @@
 
         .settings-toggle {
             position: absolute;
-            left: -15px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 15px;
+            top: 15px;
             background: #ff9800;
             color: white;
             border: none;
-            width: 30px;
-            height: 60px;
-            border-radius: 10px 0 0 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
             font-size: 1.2rem;
             display: flex;
@@ -56,61 +56,119 @@
             justify-content: center;
             transition: all 0.3s;
             z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .settings-toggle:hover {
             background: #fb8c00;
-            left: -18px;
+            transform: scale(1.1);
         }
 
         .settings-panel {
             position: absolute;
-            left: -250px;
-            top: 0;
-            bottom: 0;
-            width: 230px;
+            left: 20px;
+            top: 65px;
+            width: 280px;
             background: #2d2d2d;
-            border-radius: 20px 0 0 20px;
-            padding: 20px;
-            transition: left 0.3s;
-            z-index: 5;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 15;
         }
 
         .settings-panel.open {
-            left: -230px;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
         }
 
         .settings-panel h3 {
             color: #ffffff;
             margin-bottom: 20px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            text-align: center;
         }
 
-        .color-option {
+        .color-picker-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .color-input-wrapper {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 15px;
+            width: 100%;
+        }
+
+        input[type="color"] {
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 50%;
             cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            background: none;
         }
 
-        .color-option:hover {
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 4px solid #555;
+            border-radius: 50%;
+        }
+
+        input[type="color"]::-moz-color-swatch {
+            border: 4px solid #555;
+            border-radius: 50%;
+        }
+
+        .color-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .color-code {
             background: #3d3d3d;
-        }
-
-        .color-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            margin-right: 15px;
-            border: 2px solid #555;
-        }
-
-        .color-option span {
             color: #ffffff;
-            font-size: 0.9rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .preset-color {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .preset-color:hover {
+            transform: scale(1.1);
+            border-color: #ffffff;
         }
 
         .drag-handle {
@@ -120,6 +178,7 @@
             font-size: 0.8rem;
             margin-bottom: 10px;
             border-bottom: 1px solid #333;
+            margin-top: 30px;
         }
 
         .drag-handle::before {
@@ -204,38 +263,28 @@
 <body>
     <div class="calculator" id="calculator">
         <button class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
-            ▶
+            🎨
         </button>
         
         <div class="settings-panel" id="settingsPanel">
             <h3>Background Color</h3>
-            <div class="color-option" onclick="changeBackground('#1e1e1e')">
-                <div class="color-preview" style="background: #1e1e1e;"></div>
-                <span>Dark Gray</span>
-            </div>
-            <div class="color-option" onclick="changeBackground('#2c3e50')">
-                <div class="color-preview" style="background: #2c3e50;"></div>
-                <span>Midnight Blue</span>
-            </div>
-            <div class="color-option" onclick="changeBackground('#16a085')">
-                <div class="color-preview" style="background: #16a085;"></div>
-                <span>Turquoise</span>
-            </div>
-            <div class="color-option" onclick="changeBackground('#8e44ad')">
-                <div class="color-preview" style="background: #8e44ad;"></div>
-                <span>Purple</span>
-            </div>
-            <div class="color-option" onclick="changeBackground('#c0392b')">
-                <div class="color-preview" style="background: #c0392b;"></div>
-                <span>Red</span>
-            </div>
-            <div class="color-option" onclick="changeBackground('#d35400')">
-                <div class="color-preview" style="background: #d35400;"></div>
-                <span>Orange</span>
-            </div>
-            <div class="color-option" onclick="changeBackground('#27ae60')">
-                <div class="color-preview" style="background: #27ae60;"></div>
-                <span>Green</span>
+            <div class="color-picker-container">
+                <div class="color-input-wrapper">
+                    <input type="color" id="colorPicker" value="#1e1e1e" onchange="changeBackgroundFromPicker()">
+                    <div class="color-info">
+                        <div class="color-code" id="colorCode">#1e1e1e</div>
+                    </div>
+                </div>
+                <div class="preset-colors">
+                    <div class="preset-color" style="background: #1e1e1e;" onclick="changeBackground('#1e1e1e')" title="Dark Gray"></div>
+                    <div class="preset-color" style="background: #2c3e50;" onclick="changeBackground('#2c3e50')" title="Midnight Blue"></div>
+                    <div class="preset-color" style="background: #16a085;" onclick="changeBackground('#16a085')" title="Turquoise"></div>
+                    <div class="preset-color" style="background: #8e44ad;" onclick="changeBackground('#8e44ad')" title="Purple"></div>
+                    <div class="preset-color" style="background: #c0392b;" onclick="changeBackground('#c0392b')" title="Red"></div>
+                    <div class="preset-color" style="background: #d35400;" onclick="changeBackground('#d35400')" title="Orange"></div>
+                    <div class="preset-color" style="background: #27ae60;" onclick="changeBackground('#27ae60')" title="Green"></div>
+                    <div class="preset-color" style="background: #34495e;" onclick="changeBackground('#34495e')" title="Dark Blue"></div>
+                </div>
             </div>
         </div>
 
@@ -274,6 +323,8 @@
         const calculator = document.getElementById('calculator');
         const settingsPanel = document.getElementById('settingsPanel');
         const settingsToggle = document.getElementById('settingsToggle');
+        const colorPicker = document.getElementById('colorPicker');
+        const colorCode = document.getElementById('colorCode');
 
         function appendToDisplay(value) {
             if (currentInput === '0' || currentInput === 'Error') {
@@ -310,16 +361,28 @@
 
         function toggleSettings() {
             settingsPanel.classList.toggle('open');
-            if (settingsPanel.classList.contains('open')) {
-                settingsToggle.textContent = '◀';
-            } else {
-                settingsToggle.textContent = '▶';
-            }
         }
 
         function changeBackground(color) {
             calculator.style.background = color;
+            colorPicker.value = color;
+            colorCode.textContent = color.toUpperCase();
         }
+
+        function changeBackgroundFromPicker() {
+            const color = colorPicker.value;
+            calculator.style.background = color;
+            colorCode.textContent = color.toUpperCase();
+        }
+
+        // Close settings panel when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!settingsPanel.contains(event.target) && 
+                !settingsToggle.contains(event.target) && 
+                settingsPanel.classList.contains('open')) {
+                settingsPanel.classList.remove('open');
+            }
+        });
 
         // Keyboard support
         document.addEventListener('keydown', function(event) {
@@ -360,7 +423,10 @@
         document.addEventListener('touchend', dragEnd);
 
         function dragStart(e) {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('.settings-panel') || e.target.closest('.color-option')) {
+            if (e.target.tagName === 'BUTTON' || 
+                e.target.closest('.settings-panel') || 
+                e.target.closest('.settings-toggle') ||
+                e.target.type === 'color') {
                 return;
             }
 
