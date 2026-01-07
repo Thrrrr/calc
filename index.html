@@ -38,6 +38,81 @@
             cursor: grabbing;
         }
 
+        .settings-toggle {
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff9800;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 60px;
+            border-radius: 10px 0 0 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .settings-toggle:hover {
+            background: #fb8c00;
+            left: -18px;
+        }
+
+        .settings-panel {
+            position: absolute;
+            left: -250px;
+            top: 0;
+            bottom: 0;
+            width: 230px;
+            background: #2d2d2d;
+            border-radius: 20px 0 0 20px;
+            padding: 20px;
+            transition: left 0.3s;
+            z-index: 5;
+        }
+
+        .settings-panel.open {
+            left: -230px;
+        }
+
+        .settings-panel h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .color-option:hover {
+            background: #3d3d3d;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 15px;
+            border: 2px solid #555;
+        }
+
+        .color-option span {
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+
         .drag-handle {
             text-align: center;
             padding: 10px;
@@ -128,6 +203,42 @@
 </head>
 <body>
     <div class="calculator" id="calculator">
+        <button class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
+            ▶
+        </button>
+        
+        <div class="settings-panel" id="settingsPanel">
+            <h3>Background Color</h3>
+            <div class="color-option" onclick="changeBackground('#1e1e1e')">
+                <div class="color-preview" style="background: #1e1e1e;"></div>
+                <span>Dark Gray</span>
+            </div>
+            <div class="color-option" onclick="changeBackground('#2c3e50')">
+                <div class="color-preview" style="background: #2c3e50;"></div>
+                <span>Midnight Blue</span>
+            </div>
+            <div class="color-option" onclick="changeBackground('#16a085')">
+                <div class="color-preview" style="background: #16a085;"></div>
+                <span>Turquoise</span>
+            </div>
+            <div class="color-option" onclick="changeBackground('#8e44ad')">
+                <div class="color-preview" style="background: #8e44ad;"></div>
+                <span>Purple</span>
+            </div>
+            <div class="color-option" onclick="changeBackground('#c0392b')">
+                <div class="color-preview" style="background: #c0392b;"></div>
+                <span>Red</span>
+            </div>
+            <div class="color-option" onclick="changeBackground('#d35400')">
+                <div class="color-preview" style="background: #d35400;"></div>
+                <span>Orange</span>
+            </div>
+            <div class="color-option" onclick="changeBackground('#27ae60')">
+                <div class="color-preview" style="background: #27ae60;"></div>
+                <span>Green</span>
+            </div>
+        </div>
+
         <div class="drag-handle">Drag to move</div>
         <div class="display" id="display">0</div>
         <div class="buttons">
@@ -160,6 +271,9 @@
     <script>
         let currentInput = '';
         const display = document.getElementById('display');
+        const calculator = document.getElementById('calculator');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const settingsToggle = document.getElementById('settingsToggle');
 
         function appendToDisplay(value) {
             if (currentInput === '0' || currentInput === 'Error') {
@@ -194,6 +308,19 @@
             }
         }
 
+        function toggleSettings() {
+            settingsPanel.classList.toggle('open');
+            if (settingsPanel.classList.contains('open')) {
+                settingsToggle.textContent = '◀';
+            } else {
+                settingsToggle.textContent = '▶';
+            }
+        }
+
+        function changeBackground(color) {
+            calculator.style.background = color;
+        }
+
         // Keyboard support
         document.addEventListener('keydown', function(event) {
             const key = event.key;
@@ -216,7 +343,6 @@
         });
 
         // Dragging functionality
-        const calculator = document.getElementById('calculator');
         let isDragging = false;
         let currentX;
         let currentY;
@@ -229,14 +355,12 @@
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', dragEnd);
 
-        // Touch support for mobile
         calculator.addEventListener('touchstart', dragStart);
         document.addEventListener('touchmove', drag);
         document.addEventListener('touchend', dragEnd);
 
         function dragStart(e) {
-            // Don't drag if clicking on a button
-            if (e.target.tagName === 'BUTTON') {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('.settings-panel') || e.target.closest('.color-option')) {
                 return;
             }
 
